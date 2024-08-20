@@ -3,4 +3,5 @@ __pycache__/
 venv/
 venv_bransh/
 .idea/
+git-sim_media/
 .mp4
