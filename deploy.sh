@@ -1,3 +1,3 @@
 #!/bin/bash
-
-git pull origin
+git config pull.rebase false
+git pull origin main
