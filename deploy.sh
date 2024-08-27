@@ -1,4 +1,4 @@
 #!/bin/bash
-sudo systemctl stop service_name
-sudo systemctl start service_name
+sudo systemctl stop Netflix_instance_UP.service
+sudo systemctl start Netflix_instance_UP.service
 
