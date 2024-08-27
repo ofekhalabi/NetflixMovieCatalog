@@ -22,9 +22,10 @@ jobs:
         #the run is used to specify shell commands or scripts
         #the | operator this allows you to write multi-line strings
         run: |
-          echo "$SSH_PRIVATE_KEY" > mykey.pem
+          echo "$SSH_PRIVATE_KEY" > /home/ofekh/PycharmProjects/NetflixMovieCatalog/key/mykey.pem
+          cd /home/ofekh/PycharmProjects/NetflixMovieCatalog/key
           chmod 400 mykey.pem
-          
+          cd /home/ofekh/PycharmProjects/NetflixMovieCatalog/
           # Copy the files from the current wrok dir into the EC2 instance, under `~/app`.
           scp -o StrictHostKeyChecking=no -i mykey.pem -r * ubuntu@$EC2_PUBLIC_IP:~/app
           
