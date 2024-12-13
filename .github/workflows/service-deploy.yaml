@@ -1,37 +1,37 @@
-name: Netflix Movie Catalog Service Deployment
-
-#This workflow is triggered by a push event to the "main" branch of the repository
-on:
-  push:
-    branches:
-      - main
-
-env:
-  EC2_PUBLIC_IP: 51.20.77.201  # TODO replace to your EC2 instance public IP
-  SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}  # TODO define this secret in your GitHub repo settings
-
-jobs:
-  Deploy:
-    name: Deploy in EC2
-    runs-on: ubuntu-latest
-    steps:
-      - name: Checkout the app code
-        uses: actions/checkout@v2
-
-      - name: SSH to EC2 instance
-        #the run is used to specify shell commands or scripts
-        #the | operator this allows you to write multi-line strings
-        run: |
-          echo "$SSH_PRIVATE_KEY" > mykey.pem
-          chmod 400 mykey.pem
-          # Copy the files from the current wrok dir into the EC2 instance, under `~/app`.
-          scp -o StrictHostKeyChecking=no -i mykey.pem -r * ubuntu@$EC2_PUBLIC_IP:~/app
-          
-          # Connect to your EC2 instance and execute the `deploy.sh` script (this script is part of the repo files). 
-          # You need to implement the `deploy.sh` script yourself.
-          #
-          # Upon completion, the NetflixMovieCatalog app should be running with its newer version. 
-          # To keep the app running in the background independently on the terminal session you are logging to, configure it as a Linux service.
-    
-          ssh -o StrictHostKeyChecking=no -i mykey.pem ubuntu@$EC2_PUBLIC_IP "bash /home/ubuntu/app/deploy.sh"
-
+#name: Netflix Movie Catalog Service Deployment
+#
+##This workflow is triggered by a push event to the "main" branch of the repository
+#on:
+#  push:
+#    branches:
+#      - main
+#
+#env:
+#  EC2_PUBLIC_IP: 51.20.77.201  # TODO replace to your EC2 instance public IP
+#  SSH_PRIVATE_KEY: ${{ secrets.SSH_PRIVATE_KEY }}  # TODO define this secret in your GitHub repo settings
+#
+#jobs:
+#  Deploy:
+#    name: Deploy in EC2
+#    runs-on: ubuntu-latest
+#    steps:
+#      - name: Checkout the app code
+#        uses: actions/checkout@v2
+#
+#      - name: SSH to EC2 instance
+#        #the run is used to specify shell commands or scripts
+#        #the | operator this allows you to write multi-line strings
+#        run: |
+#          echo "$SSH_PRIVATE_KEY" > mykey.pem
+#          chmod 400 mykey.pem
+#          # Copy the files from the current wrok dir into the EC2 instance, under `~/app`.
+#          scp -o StrictHostKeyChecking=no -i mykey.pem -r * ubuntu@$EC2_PUBLIC_IP:~/app
+#
+#          # Connect to your EC2 instance and execute the `deploy.sh` script (this script is part of the repo files).
+#          # You need to implement the `deploy.sh` script yourself.
+#          #
+#          # Upon completion, the NetflixMovieCatalog app should be running with its newer version.
+#          # To keep the app running in the background independently on the terminal session you are logging to, configure it as a Linux service.
+#
+#          ssh -o StrictHostKeyChecking=no -i mykey.pem ubuntu@$EC2_PUBLIC_IP "bash /home/ubuntu/app/deploy.sh"
+#
