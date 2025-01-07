@@ -28,11 +28,12 @@ jobs:
           repository: ofekhalabi/NetflixInfra.git
           token: ${{ secrets.REPO_TOKEN }}  # The GITHUB_TOKEN secret is a GitHub access token.
           path: ./NetflixInfra
+          ref: main  # Explicitly specify the branch
 
       - name: Update YAML manifests
         run: |
           cd ./NetflixInfra/k8s/NetflixMovieCatalog
-          DOCKERHUB_USERNAME= ${{ secrets.DOCKERHUB_USERNAME }}
+          DOCKERHUB_USERNAME=${{ secrets.DOCKERHUB_USERNAME }}
           IMAGE_NAME=${{ secrets.DOCKERHUB_USERNAME }}/netflix-movie-catalog:${{ github.run_number }}
           yq e ".spec.template.spec.containers.image = \"$IMAGE_NAME\"" -i deployment.yaml
 
