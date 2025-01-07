@@ -1,4 +1,4 @@
-name: NetflixFrontend stack build-deploy
+name: NetflixMovieCatalog stack build-deploy
 
 on:
   push:
