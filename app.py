@@ -39,10 +39,20 @@ def dynamodb_to_json(dynamodb_item):
             json_item[key] = None  # Handle unexpected cases
     return json_item
 
+# Convert all items to a dictionary with a unique key
+def convert_list_to_dict(items, key_field):
+    data_dict = {}
+    for item in items:
+        json_item = dynamodb_to_json(item)
+        key_value = json_item.get(key_field)
+        if key_value:
+            data_dict[key_value] = json_item  # Use key_field as dictionary key
+    return data_dict
 
-# Convert all items to a JSON-friendly format
-data_tv = [dynamodb_to_json(item) for item in items_tv]
-data_movies = [dynamodb_to_json(item) for item in items_movies]
+
+# Choose a field to be the dictionary key (change "id" to the actual key field in your table)
+data_tv = convert_list_to_dict(items_tv, key_field="id")
+data_movies = convert_list_to_dict(items_movies, key_field="id")
 
 
 @app.route("/", methods=['GET'])
