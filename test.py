@@ -34,6 +34,7 @@ def dynamodb_to_json(dynamodb_item):
             json_item[key] = None  # Handle unexpected cases
     return json_item
 
+
 # Convert all items to a JSON-friendly format
 data_tv = [dynamodb_to_json(item) for item in items_tv]
 data_movies = [dynamodb_to_json(item) for item in items_movies]
