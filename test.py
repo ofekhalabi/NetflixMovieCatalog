@@ -1,37 +1,40 @@
 import boto3
-import json
+
+# Initialize DynamoDB client
 client = boto3.client('dynamodb')
-# Sample data (with multiple movies in old format)
-data = {
-    "insert your json data"
-}
 
-# Function to convert the dictionary to the new format
-def transform_data(movie_data):
-    return {
-        "adult": {'BOOL': movie_data["adult"]},
-        "backdrop_path": {'S': movie_data["backdrop_path"]} if movie_data["backdrop_path"] else {'NULL': True},
-        "genre_ids": {'NS': [str(genre) for genre in movie_data["genre_ids"]]},
-        "id": {'N': str(movie_data["id"])},  # Keep original ID
-        "original_language": {'S': movie_data["original_language"]},
-        "original_title": {'S': movie_data["original_title"]},
-        "overview": {'S': movie_data["overview"]},
-        "popularity": {'N': str(movie_data["popularity"])},
-        "poster_path": {'S': movie_data["poster_path"]},
-        "release_date": {'S': movie_data["release_date"]},
-        "title": {'S': movie_data["title"]},
-        "video": {'BOOL': movie_data["video"]},
-        "vote_average": {'N': str(movie_data["vote_average"])},
-        "vote_count": {'N': str(movie_data["vote_count"])}
-    }
+# Perform scan operation to retrieve all items
+data_tv_response = client.scan(TableName='ofekh-netflix-movie-tv')
+data_movies_response = client.scan(TableName='ofekh-netflix-catalog-movies')
 
-# Convert all movies in the dataset
-transformed_data = {key: transform_data(value) for key, value in data.items()}
-json.dumps(transformed_data, indent=4)
+# Extract the items from the response
+items_tv = data_tv_response.get('Items', [])
+items_movies = data_movies_response.get('Items', [])
 
-for item in transformed_data.values():
-    response = client.put_item(
-        TableName='<your-table>',  # Change <your-table> accordingly
-        Item=item
-    )
-    print(response)
+# Convert items from DynamoDB format to a standard JSON-like structure
+def dynamodb_to_json(dynamodb_item):
+    json_item = {}
+    for key, value in dynamodb_item.items():
+        # Extracting the actual values from DynamoDB format
+        if 'S' in value:
+            json_item[key] = value['S']
+        elif 'N' in value:
+            json_item[key] = float(value['N']) if '.' in value['N'] else int(value['N'])
+        elif 'BOOL' in value:
+            json_item[key] = value['BOOL']
+        elif 'L' in value:
+            json_item[key] = [dynamodb_to_json(v) for v in value['L']]
+        elif 'M' in value:
+            json_item[key] = dynamodb_to_json(value['M'])
+        elif 'NS' in value:
+            json_item[key] = [int(n) for n in value['NS']]
+        elif 'SS' in value:
+            json_item[key] = value['SS']
+        else:
+            json_item[key] = None  # Handle unexpected cases
+    return json_item
+
+# Convert all items to a JSON-friendly format
+data_tv = [dynamodb_to_json(item) for item in items_tv]
+data_movies = [dynamodb_to_json(item) for item in items_movies]
+
