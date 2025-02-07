@@ -2,7 +2,7 @@ import boto3
 import json
 
 # Initialize DynamoDB client with a specific AWS region
-client = boto3.client('dynamodb', region_name='us-east-1')  #
+client = boto3.client('dynamodb', region_name='eu-north-1')  #
 
 # Perform scan operation to retrieve all items
 data_tv_response = client.scan(TableName='ofekh-netflix-movie-tv')
