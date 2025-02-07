@@ -42,7 +42,9 @@ def dynamodb_to_json(dynamodb_item):
 
 # Convert all items to a JSON-friendly format
 data_tv = [dynamodb_to_json(item) for item in items_tv]
+json.dumps(data_tv, indent=4)
 data_movies = [dynamodb_to_json(item) for item in items_movies]
+json.dumps(data_movies, indent=4)
 
 
 @app.route("/", methods=['GET'])
