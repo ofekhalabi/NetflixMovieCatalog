@@ -44,6 +44,6 @@ jobs:
            cd ./NetflixInfra
            git config --local user.email "github@action"
            git config --local user.name "auto-update"
-           git add k8s/NetflixMovieCatalog/deployment.yaml
+           git add k8s/prod/NetflixMovieCatalog/deployment.yaml
            git commit -m "Update image to $IMAGE_NAME"
            git push origin main
