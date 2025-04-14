@@ -32,7 +32,7 @@ jobs:
 
       - name: Update YAML manifests
         run: |
-          cd ./NetflixInfra/k8s/NetflixMovieCatalog
+          cd ./NetflixInfra/k8s/prod/NetflixMovieCatalog
           DOCKERHUB_USERNAME=${{ secrets.DOCKERHUB_USERNAME }}
           IMAGE_NAME=${{ secrets.DOCKERHUB_USERNAME }}/netflix-movie-catalog:${{ github.run_number }}
           yq e ".spec.template.spec.containers[0].image = \"$IMAGE_NAME\"" -i deployment.yaml
