@@ -30,6 +30,7 @@ jobs:
           path: ./NetflixInfra
           ref: main  # Explicitly specify the branch
 
+
       - name: Update YAML manifests
         run: |
           cd ./NetflixInfra/k8s/prod/NetflixMovieCatalog
