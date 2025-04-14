@@ -1,9 +1,13 @@
 from flask import Flask, request, jsonify
 import random
 import boto3
+import signal
+import threading
 
 app = Flask(__name__)
 
+# Global readiness flag
+is_ready = True
 
 # Initialize DynamoDB client with a specific AWS region
 client = boto3.client('dynamodb', region_name='eu-north-1')  #
@@ -107,6 +111,23 @@ def update_popularity():
 def status():
     return 'OK'
 
+@app.route("/ready")
+def readiness_probe():
+    if is_ready:
+        return jsonify({"status": "ready"}), 200
+    else:
+        return jsonify({"status": "shutting down"}), 503
+
+@app.route("/live")
+def liveness_probe():
+    return jsonify({"status": "alive"}), 200
+
+def handle_sigterm(*args):
+    global is_ready
+    print("SIGTERM received, setting readiness to False")
+    is_ready = False
+
 
 if __name__ == '__main__':
+    signal.signal(signal.SIGTERM, handle_sigterm)
     app.run(port=8080, host='0.0.0.0')
